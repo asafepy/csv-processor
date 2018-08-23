@@ -1,0 +1,11 @@
+.virtualenv
+product.csv
+*.sqlite3
+*.db
+captura.db
+.DS_Store
+*.pyc
+db.sqlite3
+__pycache__/
+build/
+.pytest_cache/

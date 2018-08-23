@@ -13,45 +13,80 @@ from core.modules.crawler import Crawler
 __author__ = 'asafe'
 
 
+import os
+import csv
+from dannemann import settings
+
 class Processor(object):
-    _test = False
+	
+	_file = None
 
-    @classmethod
-    def open_csv(self):
-        product_db = Product_db(get_engine_db(self._test))
-        products = product_db.get_products_for_status('WAIT')
-        return products
+    
+	@classmethod
+	def open_csv(self):
+		
+		with open(self._file, 'r') as csvfile:
+			spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+			for row in spamreader:
+				print (', '.join(row))
+	
+	def get_article():
+		pass
 
-    @classmethod
-    def parser_and_update(self, key, url):
+	def save_on_db():
+		pass
 
-        content = Parser(url)
-        Product_db(get_engine_db(self._test)).update_product(
-            key, content.get_title(), content.get_name(), 'PROCESSED'
-        )
 
-    @classmethod
-    def run_processor(self):
+if __name__ == "__main__":
+	# print(os.path.join(settings.BASE_DIR, 'extras/importacao/artigos.csv'))
+	Import._file = os.path.join(settings.BASE_DIR, 'extras/importacao/artigos.csv')
+	results = Import.open_csv()
+
+	# for item in results:
+	# 	print(item)
+
+
+
+
+# class Processor(object):
+#     _test = False
+
+#     @classmethod
+#     def open_csv(self):
+#         product_db = Product_db(get_engine_db(self._test))
+#         products = product_db.get_products_for_status('WAIT')
+#         return products
+
+#     @classmethod
+#     def parser_and_update(self, key, url):
+
+#         content = Parser(url)
+#         Product_db(get_engine_db(self._test)).update_product(
+#             key, content.get_title(), content.get_name(), 'PROCESSED'
+#         )
+
+#     @classmethod
+#     def run_processor(self):
         
-        processes = []
-        for product in self.get_urls():
-            if validate_url( product.url ):
-                process = Process(target=self.parser_and_update, args=(product.id, product.url))
-                processes.append(process)
+#         processes = []
+#         for product in self.get_urls():
+#             if validate_url( product.url ):
+#                 process = Process(target=self.parser_and_update, args=(product.id, product.url))
+#                 processes.append(process)
 
-        for p in processes:
-            p.start()
+#         for p in processes:
+#             p.start()
         
-        for p in processes:
-            p.join()
+#         for p in processes:
+#             p.join()
     
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
 
-    Processor.run_processor()
+#     Processor.run_processor()
 
-    print('====== Processamento concluído ======')
+#     print('====== Processamento concluído ======')
     
