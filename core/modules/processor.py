@@ -5,30 +5,26 @@ import re
 from multiprocessing import Process
 
 from core.db.database import get_engine_db
-from core.db.products import Product_db
-from core.utils.parser import Parser
-from core.utils.validation import validate_url
-from core.modules.crawler import Crawler
+from core.utils.file_util import cleanhtml
+
 
 __author__ = 'asafe'
 
 
 import os
 import csv
-from dannemann import settings
 
 class Processor(object):
 	
 	_file = None
 
-    
 	@classmethod
 	def open_csv(self):
 		
 		with open(self._file, 'r') as csvfile:
 			spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
 			for row in spamreader:
-				print (', '.join(row))
+				print (', '.join(cleanhtml(row)))
 	
 	def get_article():
 		pass
@@ -38,14 +34,9 @@ class Processor(object):
 
 
 if __name__ == "__main__":
-	# print(os.path.join(settings.BASE_DIR, 'extras/importacao/artigos.csv'))
-	Import._file = os.path.join(settings.BASE_DIR, 'extras/importacao/artigos.csv')
-	results = Import.open_csv()
 
-	# for item in results:
-	# 	print(item)
-
-
+	Processor._file = 'files/artigos.csv'
+	results = Processor.open_csv()
 
 
 # class Processor(object):
