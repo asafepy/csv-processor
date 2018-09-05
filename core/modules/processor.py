@@ -23,30 +23,35 @@ class Processor(object):
 	_db = None
 
 	@staticmethod
-	def save_on_db(row_csv, db):
-	
-		article = Article(title = row_csv['title'], descricao = row_csv['descricao'], dtPublicacao = row_csv['dtPublicacao'], idIdioma = row_csv['idIdioma'], idArtigoPai = row_csv['idArtigoPai'])
+	def save_on_db(row_csv, ind, db):
 
+		article = Article(titulo = row_csv['titulo'][ind], descricao = row_csv['descricao'][ind], dt_publicacao = row_csv['dtPublicacao'][ind], id_idioma = row_csv['idIdioma'][ind])
 		db.add(article)
 		db.commit()
 		
 	@classmethod
 	def open_csv(self):
 		columns = defaultdict(list)
+		count = 0
 		with open(self._file, 'r') as csvfile:
 			spamreader = csv.DictReader(csvfile)
 			for row in spamreader:
 				for (k,v) in row.items():
 					columns[k].append(cleanhtml(v))	
-		return columns
+				count += 1
+		
+		return (columns, int(count))
 	
 	@classmethod
 	def run_processor(self):
 		
 		if( self._db is not None ):
-			for article in self.open_csv():
-				self.save_on_db(article, self._db)
-				print('success')
+			articles, count = self.open_csv()
+
+			for ind in range(0, count):
+				# print(len(articles['titulo']))
+				self.save_on_db(articles, ind, self._db)
+			print('success')
 
 
 if __name__ == "__main__":

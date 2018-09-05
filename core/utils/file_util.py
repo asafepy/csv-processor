@@ -2,8 +2,10 @@ import csv
 import os
 import re
 
-__author__ = 'asafe'
+from html.parser import HTMLParser
 
+__author__ = 'asafe'
+parser = HTMLParser()
 
 def has_header(file, header):
     with open(file, 'r') as csvfile:
@@ -33,8 +35,8 @@ def create_file(file, header):
             add_header(file, header)
 
 
+
 def cleanhtml(raw_html):
-    # print(raw_html)
-    cleanr = re.compile(r'<.*?>')
-    cleantext = re.sub(cleanr, '', str(raw_html))
-    return cleantext
+    cleanr = re.compile('<.*?>')
+    cleantext = re.sub(cleanr, '', raw_html)
+    return parser.unescape(cleantext).decode("utf-8")
