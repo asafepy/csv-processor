@@ -34,6 +34,7 @@ def create_file(file, header):
 
 
 def cleanhtml(raw_html):
-    cleanr = re.compile('<.*?>')
-    cleantext = re.sub(cleanr, '', raw_html)
+    # print(raw_html)
+    cleanr = re.compile(r'<.*?>')
+    cleantext = re.sub(cleanr, '', str(raw_html))
     return cleantext

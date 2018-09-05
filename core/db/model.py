@@ -13,7 +13,6 @@ class Article(Base):
     title = Column(String,  nullable=True)
     descricao = Column(String,  nullable=True)
     dtPublicacao = Column(String,  nullable=True)
-    dtPublicacao = Column(String,  nullable=True)
     idIdioma = Column(String,  nullable=True)
-    idArtigoPai = Column(String,  nullable=True)
+    idArtigoPai = Column(Integer,  nullable=True)
     name = Column(String,  nullable=True)

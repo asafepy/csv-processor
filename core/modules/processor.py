@@ -1,83 +1,56 @@
-import argparse
 import concurrent.futures
+import argparse
 import json
 import re
-from multiprocessing import Process
+import os
+import csv
+import sys
 
+from sqlalchemy.orm import Session
+from multiprocessing import Process
 from core.db.database import get_engine_db
 from core.utils.file_util import cleanhtml
-
+from collections import defaultdict
+from core.db.model import Article
 
 __author__ = 'asafe'
 
-
-import os
-import csv
+csv.field_size_limit(sys.maxsize)
 
 class Processor(object):
 	
 	_file = None
+	_db = None
 
+	@staticmethod
+	def save_on_db(row_csv, db):
+	
+		article = Article(title = row_csv['title'], descricao = row_csv['descricao'], dtPublicacao = row_csv['dtPublicacao'], idIdioma = row_csv['idIdioma'], idArtigoPai = row_csv['idArtigoPai'])
+
+		db.add(article)
+		db.commit()
+		
 	@classmethod
 	def open_csv(self):
-		
+		columns = defaultdict(list)
 		with open(self._file, 'r') as csvfile:
-			spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+			spamreader = csv.DictReader(csvfile)
 			for row in spamreader:
-				print (', '.join(cleanhtml(row)))
+				for (k,v) in row.items():
+					columns[k].append(cleanhtml(v))	
+		return columns
 	
-	def get_article():
-		pass
-
-	def save_on_db():
-		pass
+	@classmethod
+	def run_processor(self):
+		
+		if( self._db is not None ):
+			for article in self.open_csv():
+				self.save_on_db(article, self._db)
+				print('success')
 
 
 if __name__ == "__main__":
 
 	Processor._file = 'files/artigos.csv'
-	results = Processor.open_csv()
-
-
-# class Processor(object):
-#     _test = False
-
-#     @classmethod
-#     def open_csv(self):
-#         product_db = Product_db(get_engine_db(self._test))
-#         products = product_db.get_products_for_status('WAIT')
-#         return products
-
-#     @classmethod
-#     def parser_and_update(self, key, url):
-
-#         content = Parser(url)
-#         Product_db(get_engine_db(self._test)).update_product(
-#             key, content.get_title(), content.get_name(), 'PROCESSED'
-#         )
-
-#     @classmethod
-#     def run_processor(self):
-        
-#         processes = []
-#         for product in self.get_urls():
-#             if validate_url( product.url ):
-#                 process = Process(target=self.parser_and_update, args=(product.id, product.url))
-#                 processes.append(process)
-
-#         for p in processes:
-#             p.start()
-        
-#         for p in processes:
-#             p.join()
-    
-
-
-
-# if __name__ == "__main__":
-
-
-#     Processor.run_processor()
-
-#     print('====== Processamento concluído ======')
-    
+	Processor._db = Session(bind=get_engine_db())
+	Processor.run_processor()
