@@ -12,9 +12,11 @@ from core.db.database import get_engine_db
 from core.utils.file_util import cleanhtml
 from collections import defaultdict
 from core.db.model import Article, News
+from glob import glob
+
 
 __author__ = 'asafe'
-
+path = 'files/'
 csv.field_size_limit(sys.maxsize)
 
 class Processor(object):
@@ -55,7 +57,9 @@ class Processor(object):
 
 
 if __name__ == "__main__":
+	
+	# for file in glob(path+"*.csv"):
 
-	Processor._file = 'files/artigos.csv'
+	Processor._file = 'files/article.csv'
 	Processor._db = Session(bind=get_engine_db())
 	Processor.run_processor()
