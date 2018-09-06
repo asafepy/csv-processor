@@ -39,4 +39,4 @@ def create_file(file, header):
 def cleanhtml(raw_html):
     cleanr = re.compile('<.*?>')
     cleantext = re.sub(cleanr, '', raw_html)
-    return parser.unescape(cleantext).decode("utf-8")
+    return parser.unescape(cleantext)
